@@ -3,6 +3,7 @@ package com.littleapp.videoplayer.Activity
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
@@ -49,14 +50,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun permission() {
-        if (ContextCompat.checkSelfPermission(
-                applicationContext,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        val videoPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_VIDEO // Used for API 33 up to API 36+
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE // Fallback for API 32 and below
+        }
+
+        //Check and request the permission
+        if (ContextCompat.checkSelfPermission(applicationContext, videoPermission) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this@MainActivity,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                arrayOf(videoPermission),
                 REQUEST_CODE_PERMISSION
             )
         } else {
