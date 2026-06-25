@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -48,11 +47,8 @@ dependencies {
     //Layout
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
-    implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.cardview)
     //Image
     implementation(libs.glide)                          //Glide Image
-    ksp(libs.glide.ksp)                                 //Glide Compiler
     //Other's
     implementation(libs.exoplayer)                      //Video Player
 }
