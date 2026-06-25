@@ -48,12 +48,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
     //Image
-    implementation(libs.glide)                          //Glide Image
+    implementation(libs.glide)                             //Glide Image
     //Other's
-    //implementation(libs.exoplayer)                      //Video Player
-    // Core Media3 capabilities engine
-    implementation("androidx.media3:media3-exoplayer:1.10.1")
-
-    // MANDATORY LINE: Adds PlayerView components to your project layouts target
-    implementation("androidx.media3:media3-ui:1.10.1")
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
 }
