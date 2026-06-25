@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?colorOnBackground">
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/constraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?colorOnBackground">
+        android:layout_above="@+id/bottomNavView"
+        android:layout_alignParentTop="true" />
 
-        <FrameLayout
-            android:id="@+id/constraint"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/bottomNavView"
-            android:layout_alignParentTop="true" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?colorOnBackground"
+        app:itemIconTint="@drawable/state_for_nav"
+        app:itemTextColor="@drawable/state_for_nav"
+        app:menu="@menu/menu" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="?colorOnBackground"
-            ads:itemIconTint="@drawable/state_for_nav"
-            ads:itemTextColor="@drawable/state_for_nav"
-            ads:menu="@menu/menu" />
-
-    </RelativeLayout>
-
-</layout>
+</RelativeLayout>

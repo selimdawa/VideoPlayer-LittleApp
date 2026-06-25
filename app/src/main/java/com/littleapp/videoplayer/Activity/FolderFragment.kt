@@ -9,27 +9,39 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.littleapp.videoplayer.Activity.MainActivity.Companion.folderList
 import com.littleapp.videoplayer.Activity.MainActivity.Companion.videoFiles
-import com.littleapp.videoplayer.R
 import com.littleapp.videoplayer.Adapter.FolderAdapter
+import com.littleapp.videoplayer.databinding.FragmentFolderBinding
 
 class FolderFragment : Fragment() {
 
-    var adapter: FolderAdapter? = null
-    var recyclerView: RecyclerView? = null
+    private var _binding: FragmentFolderBinding? = null
+    private val binding get() = _binding!!
+    private var adapter: FolderAdapter? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_folder, container, false)
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentFolderBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        recyclerView = view.findViewById(R.id.recyclerView)
-        if (folderList != null && folderList!!.size > 0 && videoFiles != null) {
-            adapter = FolderAdapter(requireContext(), videoFiles, folderList!!)
-            recyclerView!!.adapter = adapter
-            recyclerView!!.layoutManager =
-                LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val currentFolders = folderList
+        val currentVideos = videoFiles
+
+        if (!currentFolders.isNullOrEmpty() && currentVideos != null) {
+            adapter = FolderAdapter(requireContext(), currentVideos, currentFolders)
+            binding.recyclerView.adapter = adapter
+            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         }
-        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

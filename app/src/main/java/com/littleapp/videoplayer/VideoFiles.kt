@@ -1,26 +1,11 @@
 package com.littleapp.videoplayer
 
-class VideoFiles {
-    var id: String? = null
-    var path: String? = null
-    var title: String? = null
-    var fileName: String? = null
-    var size: String? = null
-    var dateAdded: String? = null
-    var duration: String? = null
-
-    constructor()
-
-    constructor(
-        id: String?, path: String?, title: String?, fileName: String?,
-        size: String?, dateAdded: String?, duration: String?
-    ) {
-        this.id = id
-        this.path = path
-        this.title = title
-        this.fileName = fileName
-        this.size = size
-        this.dateAdded = dateAdded
-        this.duration = duration
-    }
-}
+data class VideoFiles(
+    val id: String? = null,
+    val path: String? = null,
+    val title: String? = null,
+    val fileName: String? = null,
+    val size: String? = null,
+    val dateAdded: String? = null,
+    val duration: String? = null
+)

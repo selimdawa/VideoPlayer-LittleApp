@@ -8,28 +8,37 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.littleapp.videoplayer.Activity.MainActivity.Companion.videoFiles
-import com.littleapp.videoplayer.R
 import com.littleapp.videoplayer.Adapter.VideoAdapter
+import com.littleapp.videoplayer.databinding.FragmentFilesBinding
 
 class FilesFragment : Fragment() {
 
-    var recyclerView: RecyclerView? = null
-    var adapter: VideoAdapter? = null
+    private var _binding: FragmentFilesBinding? = null
+    private val binding get() = _binding!!
+    private var adapter: VideoAdapter? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_files, container, false)
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentFilesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        recyclerView = view.findViewById(R.id.recyclerView)
-        if (videoFiles != null && videoFiles!!.size > 0) {
-            adapter = VideoAdapter(requireContext(), videoFiles!!)
-            recyclerView!!.adapter = adapter
-            recyclerView!!.layoutManager = LinearLayoutManager(
-                context, RecyclerView.VERTICAL, false
-            )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val currentVideos = videoFiles
+        if (!currentVideos.isNullOrEmpty()) {
+            adapter = VideoAdapter(requireContext(), currentVideos)
+            binding.recyclerView.adapter = adapter
+            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         }
-        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

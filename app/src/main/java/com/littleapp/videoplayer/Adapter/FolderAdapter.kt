@@ -3,9 +3,7 @@ package com.littleapp.videoplayer.Adapter
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.littleapp.videoplayer.Unit.CLASS
 import com.littleapp.videoplayer.VideoFiles
@@ -17,47 +15,38 @@ class FolderAdapter(
     private val folderName: ArrayList<String>,
 ) : RecyclerView.Adapter<FolderAdapter.ViewHolder>() {
 
-    private var binding: ItemVideoPlayerFolderBinding? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        binding = ItemVideoPlayerFolderBinding.inflate(LayoutInflater.from(context), parent, false)
-        return ViewHolder(binding!!.root)
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemVideoPlayerFolderBinding.inflate(inflater, parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val index = folderName[position].lastIndexOf("/")
-        val folder = folderName[position].substring(index + 1)
-        holder.name.text = folder
-        holder.count.text = NumberOfFiles(folderName[position]).toString()
+        val path = folderName[position]
+        val folder = path.substringAfterLast('/')
+
+        holder.binding.name.text = folder
+        holder.binding.count.text = numberOfFiles(path).toString()
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, CLASS.VIDEO_FOLDER)
-            intent.putExtra("folderName", folderName[position])
+            val intent = Intent(context, CLASS.VIDEO_FOLDER).apply {
+                putExtra("folderName", path)
+            }
             context.startActivity(intent)
         }
     }
 
-    override fun getItemCount(): Int {
-        return folderName.size
-    }
+    override fun getItemCount(): Int = folderName.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var name: TextView
-        var count: TextView
+    class ViewHolder(val binding: ItemVideoPlayerFolderBinding) : RecyclerView.ViewHolder(binding.root)
 
-        init {
-            name = binding!!.name
-            count = binding!!.count
-        }
-    }
-
-    fun NumberOfFiles(folderName: String?): Int {
+    fun numberOfFiles(folderName: String?): Int {
+        if (videoFiles == null || folderName == null) return 0
         var countFiles = 0
-        for (videoFiles in videoFiles!!) {
-            if (videoFiles!!.path!!.substring(0, videoFiles.path!!.lastIndexOf("/")).endsWith(
-                    folderName!!
-                )
-            ) {
+        for (video in videoFiles) {
+            val videoPath = video?.path ?: continue
+            val parentFolder = videoPath.substringBeforeLast('/', "")
+            if (parentFolder.endsWith(folderName)) {
                 countFiles++
             }
         }
