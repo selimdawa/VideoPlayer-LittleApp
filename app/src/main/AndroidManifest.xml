@@ -2,7 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Modern Granular Video Access (Targeting Android 13+) -->
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
+    <!-- Legacy Storage Access (Scoped safely to older Android versions only) -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
 
    <application
        android:allowBackup="true"

@@ -1,6 +1,7 @@
 package com.littleapp.videoplayer.Activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -8,8 +9,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.littleapp.videoplayer.R
 import com.littleapp.videoplayer.Unit.THEME
@@ -21,20 +22,30 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val context: Context = this
 
+    private val videoPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
+            videoFiles = getAllVideos(context)
+            loadFolderFragment()
+        } else {
+            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         THEME.setThemeOfApp(context)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        permission()
+        checkAndRequestPermissions()
 
         binding.bottomNavView.setOnItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.folders -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.constraint, FolderFragment())
-                        .commit()
+                    loadFolderFragment()
                     item.isChecked = true
                 }
 
@@ -49,42 +60,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun permission() {
+    @SuppressLint("InlinedApi")
+    private fun checkAndRequestPermissions() {
         val videoPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             Manifest.permission.READ_MEDIA_VIDEO
         } else {
             Manifest.permission.READ_EXTERNAL_STORAGE
         }
 
-        if (ContextCompat.checkSelfPermission(applicationContext, videoPermission) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(videoPermission),
-                REQUEST_CODE_PERMISSION
-            )
+        if (ContextCompat.checkSelfPermission(this, videoPermission) != PackageManager.PERMISSION_GRANTED) {
+            videoPermissionLauncher.launch(videoPermission)
         } else {
             videoFiles = getAllVideos(context)
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.constraint, FolderFragment())
-                .commit()
+            loadFolderFragment()
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
-                videoFiles = getAllVideos(context)
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.constraint, FolderFragment())
-                    .commit()
-            } else {
-                Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
-        }
+    private fun loadFolderFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.constraint, FolderFragment())
+            .commit()
     }
 
     private fun getAllVideos(context: Context): ArrayList<VideoFiles?> {
@@ -127,7 +122,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val REQUEST_CODE_PERMISSION = 123
         var videoFiles: ArrayList<VideoFiles?>? = ArrayList()
         var folderList: ArrayList<String>? = ArrayList()
     }
