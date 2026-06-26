@@ -12,8 +12,10 @@ import com.littleapp.videoplayer.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySplashBinding
-    private val context: Context = this
+    private var _binding: ActivitySplashBinding? = null
+    private val binding get() = _binding!!
+
+    private val context: Context = this@SplashActivity
 
     private val timePerSecond = 2
     private val timeFinal = TIME_PER_MILLIS * timePerSecond
@@ -21,7 +23,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         THEME.setThemeOfApp(context)
         super.onCreate(savedInstanceState)
-        binding = ActivitySplashBinding.inflate(layoutInflater)
+        _binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         Handler(Looper.getMainLooper()).postDelayed({ launch() }, timeFinal.toLong())
@@ -30,6 +32,11 @@ class SplashActivity : AppCompatActivity() {
     private fun launch() {
         VOID.Intent1(context, CLASS.MAIN)
         finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

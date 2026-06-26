@@ -8,13 +8,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.littleapp.videoplayer.Unit.THEME
 import com.littleapp.videoplayer.Adapter.VideoFolderAdapter
-import com.littleapp.videoplayer.VideoFiles
+import com.littleapp.videoplayer.Model.VideoFiles
 import com.littleapp.videoplayer.databinding.ActivityVideoFolderBinding
 
 class VideoFolderActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityVideoFolderBinding
-    private val context: Context = this
+    private var _binding: ActivityVideoFolderBinding? = null
+    private val binding get() = _binding!!
+
+    private val context: Context = this@VideoFolderActivity
     private var adapter: VideoFolderAdapter? = null
     private var myFolderName: String? = null
     private var list = ArrayList<VideoFiles?>()
@@ -22,7 +24,7 @@ class VideoFolderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         THEME.setThemeOfApp(context)
         super.onCreate(savedInstanceState)
-        binding = ActivityVideoFolderBinding.inflate(layoutInflater)
+        _binding = ActivityVideoFolderBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         myFolderName = intent.getStringExtra("folderName")
@@ -32,8 +34,10 @@ class VideoFolderActivity : AppCompatActivity() {
 
         if (list.isNotEmpty()) {
             adapter = VideoFolderAdapter(context, list)
-            binding.recyclerView.adapter = adapter
-            binding.recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            binding.recyclerView.apply {
+                adapter = this@VideoFolderActivity.adapter
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            }
         }
     }
 
@@ -54,15 +58,24 @@ class VideoFolderActivity : AppCompatActivity() {
         val selectionArgs = arrayOf("%$folderName%")
 
         context.contentResolver.query(uri, projection, selection, selectionArgs, null)?.use { cursor ->
+            val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+            val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
+            val titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)
+            val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)
+            val dateAddedIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
+            val durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
+            val displayNameIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
+            val bucketIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME)
+
             while (cursor.moveToNext()) {
-                val id = cursor.getString(0)
-                val path = cursor.getString(1)
-                val title = cursor.getString(2)
-                val size = cursor.getString(3)
-                val dateAdded = cursor.getString(4)
-                val duration = cursor.getString(5)
-                val fileName = cursor.getString(6)
-                val bucketName = cursor.getString(7)
+                val id = cursor.getString(idIndex)
+                val path = cursor.getString(dataIndex)
+                val title = cursor.getString(titleIndex)
+                val size = cursor.getString(sizeIndex)
+                val dateAdded = cursor.getString(dateAddedIndex)
+                val duration = cursor.getString(durationIndex)
+                val fileName = cursor.getString(displayNameIndex)
+                val bucketName = cursor.getString(bucketIndex)
 
                 val videoFiles = VideoFiles(id, path, title, fileName, size, dateAdded, duration)
                 if (folderName.endsWith(bucketName)) {
@@ -71,5 +84,10 @@ class VideoFolderActivity : AppCompatActivity() {
             }
         }
         return tempVideoFiles
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

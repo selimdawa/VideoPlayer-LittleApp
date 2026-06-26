@@ -1,4 +1,4 @@
-package com.littleapp.videoplayer.Activity
+package com.littleapp.videoplayer.Fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +16,7 @@ class FolderFragment : Fragment() {
 
     private var _binding: FragmentFolderBinding? = null
     private val binding get() = _binding!!
+
     private var adapter: FolderAdapter? = null
 
     override fun onCreateView(
@@ -35,8 +36,11 @@ class FolderFragment : Fragment() {
 
         if (!currentFolders.isNullOrEmpty() && currentVideos != null) {
             adapter = FolderAdapter(requireContext(), currentVideos, currentFolders)
-            binding.recyclerView.adapter = adapter
-            binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+
+            binding.recyclerView.apply {
+                adapter = this@FolderFragment.adapter
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.littleapp.videoplayer.Activity
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.Window
 import androidx.annotation.OptIn
@@ -17,22 +18,23 @@ import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import com.littleapp.videoplayer.Adapter.VideoAdapter.Companion.videoFile
 import com.littleapp.videoplayer.Adapter.VideoFolderAdapter.Companion.folderVideoFile
 import com.littleapp.videoplayer.Unit.THEME
-import com.littleapp.videoplayer.VideoFiles
+import com.littleapp.videoplayer.Model.VideoFiles
 import com.littleapp.videoplayer.databinding.ActivityPlayerBinding
 
 class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityPlayerBinding
-    private val context: Context = this
+    private var _binding: ActivityPlayerBinding? = null
+    private val binding get() = _binding!!
+
+    private val context: Context = this@PlayerActivity
     private var exoPlayer: ExoPlayer? = null
     private var position = -1
     private var myFiles: ArrayList<VideoFiles?>? = ArrayList()
 
-    @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         THEME.setThemeOfApp(context)
         super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
+        _binding = ActivityPlayerBinding.inflate(layoutInflater)
         setFullScreen()
         setContentView(binding.root)
 
@@ -40,22 +42,31 @@ class PlayerActivity : AppCompatActivity() {
         val sender = intent.getStringExtra("sender")
 
         myFiles = if (sender == "FolderIsSending") folderVideoFile else videoFile
+    }
 
-        myFiles?.getOrNull(position)?.path?.let { path ->
-            val uri = path.toUri()
+    @OptIn(UnstableApi::class)
+    private fun initializePlayer() {
+        val path = myFiles?.getOrNull(position)?.path ?: return
+        val uri = path.toUri()
 
-            exoPlayer = ExoPlayer.Builder(context).build().apply {
-                val dataSourceFactory = DefaultDataSource.Factory(context)
-                val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(MediaItem.fromUri(uri))
+        exoPlayer = ExoPlayer.Builder(context).build().apply {
+            val dataSourceFactory = DefaultDataSource.Factory(context)
+            val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(MediaItem.fromUri(uri))
 
-                binding.expo.player = this
-                binding.expo.keepScreenOn = true
+            binding.expo.player = this
+            binding.expo.keepScreenOn = true
 
-                setMediaSource(mediaSource)
-                prepare()
-                playWhenReady = true
-            }
+            setMediaSource(mediaSource)
+            prepare()
+            playWhenReady = true
+        }
+    }
+
+    private fun releasePlayer() {
+        exoPlayer?.let { player ->
+            player.release()
+            exoPlayer = null
         }
     }
 
@@ -70,19 +81,36 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (Build.VERSION.SDK_INT > 23) {
+            initializePlayer()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT <= 23 || exoPlayer == null) {
+            initializePlayer()
+        }
+    }
+
     override fun onPause() {
         super.onPause()
-        exoPlayer?.playWhenReady = false
+        if (Build.VERSION.SDK_INT <= 23) {
+            releasePlayer()
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        exoPlayer?.playWhenReady = false
+        if (Build.VERSION.SDK_INT > 23) {
+            releasePlayer()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        exoPlayer?.release()
-        exoPlayer = null
+        _binding = null
     }
 }
