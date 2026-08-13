@@ -1,4 +1,4 @@
-package com.littleapp.videoplayer.Fragment
+package com.littleapp.videoplayer.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,35 +7,38 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.littleapp.videoplayer.Activity.MainActivity.Companion.videoFiles
-import com.littleapp.videoplayer.Adapter.VideoAdapter
-import com.littleapp.videoplayer.databinding.FragmentFilesBinding
+import com.littleapp.videoplayer.activity.MainActivity.Companion.folderList
+import com.littleapp.videoplayer.activity.MainActivity.Companion.videoFiles
+import com.littleapp.videoplayer.adapter.FolderAdapter
+import com.littleapp.videoplayer.databinding.FragmentFolderBinding
 
-class FilesFragment : Fragment() {
+class FolderFragment : Fragment() {
 
-    private var _binding: FragmentFilesBinding? = null
+    private var _binding: FragmentFolderBinding? = null
     private val binding get() = _binding!!
 
-    private var adapter: VideoAdapter? = null
+    private var adapter: FolderAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFilesBinding.inflate(inflater, container, false)
+        _binding = FragmentFolderBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val currentFolders = folderList
         val currentVideos = videoFiles
-        if (!currentVideos.isNullOrEmpty()) {
-            adapter = VideoAdapter(requireContext(), currentVideos)
+
+        if (!currentFolders.isNullOrEmpty() && currentVideos != null) {
+            adapter = FolderAdapter(requireContext(), currentVideos, currentFolders)
 
             binding.recyclerView.apply {
-                adapter = this@FilesFragment.adapter
+                adapter = this@FolderFragment.adapter
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             }
         }

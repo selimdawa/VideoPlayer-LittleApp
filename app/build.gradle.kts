@@ -47,7 +47,8 @@ dependencies {
     //Layout
     implementation(libs.material)
     //Image
-    implementation(libs.coil)                             //Coil Image
+    implementation(libs.coil)                              //Coil Image
+    implementation(libs.coilVideo)                         //Coil Video
     //Other's
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)

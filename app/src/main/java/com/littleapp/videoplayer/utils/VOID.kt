@@ -1,4 +1,4 @@
-package com.littleapp.videoplayer.Unit
+package com.littleapp.videoplayer.utils
 
 import android.content.Context
 import android.content.Intent

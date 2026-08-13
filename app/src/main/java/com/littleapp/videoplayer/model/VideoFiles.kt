@@ -1,4 +1,4 @@
-package com.littleapp.videoplayer.Model
+package com.littleapp.videoplayer.model
 
 data class VideoFiles(
     val id: String? = null,

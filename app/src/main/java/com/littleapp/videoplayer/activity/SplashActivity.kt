@@ -1,13 +1,13 @@
-package com.littleapp.videoplayer.Activity
+package com.littleapp.videoplayer.activity
 
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import com.littleapp.videoplayer.Unit.CLASS
-import com.littleapp.videoplayer.Unit.THEME
-import com.littleapp.videoplayer.Unit.VOID
+import com.littleapp.videoplayer.utils.CLASS
+import com.littleapp.videoplayer.utils.THEME
+import com.littleapp.videoplayer.utils.VOID
 import com.littleapp.videoplayer.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {

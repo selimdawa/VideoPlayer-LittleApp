@@ -1,6 +1,6 @@
-package com.littleapp.videoplayer.Unit
+package com.littleapp.videoplayer.utils
 
-import com.littleapp.videoplayer.Activity.*
+import com.littleapp.videoplayer.activity.*
 
 object CLASS {
     val MAIN: Class<*> = MainActivity::class.java

@@ -1,4 +1,4 @@
-package com.littleapp.videoplayer.Activity
+package com.littleapp.videoplayer.activity
 
 import android.content.Context
 import android.os.Build
@@ -15,10 +15,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import com.littleapp.videoplayer.Adapter.VideoAdapter.Companion.videoFile
-import com.littleapp.videoplayer.Adapter.VideoFolderAdapter.Companion.folderVideoFile
-import com.littleapp.videoplayer.Unit.THEME
-import com.littleapp.videoplayer.Model.VideoFiles
+import com.littleapp.videoplayer.adapter.VideoAdapter.Companion.videoFile
+import com.littleapp.videoplayer.adapter.VideoFolderAdapter.Companion.folderVideoFile
+import com.littleapp.videoplayer.utils.THEME
+import com.littleapp.videoplayer.model.VideoFiles
 import com.littleapp.videoplayer.databinding.ActivityPlayerBinding
 
 class PlayerActivity : AppCompatActivity() {

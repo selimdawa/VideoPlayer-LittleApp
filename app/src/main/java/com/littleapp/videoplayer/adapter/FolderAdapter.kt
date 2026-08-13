@@ -1,12 +1,12 @@
-package com.littleapp.videoplayer.Adapter
+package com.littleapp.videoplayer.adapter
 
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.littleapp.videoplayer.Model.VideoFiles
-import com.littleapp.videoplayer.Unit.CLASS
+import com.littleapp.videoplayer.model.VideoFiles
+import com.littleapp.videoplayer.utils.CLASS
 import com.littleapp.videoplayer.databinding.ItemVideoPlayerFolderBinding
 
 class FolderAdapter(

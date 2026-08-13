@@ -1,4 +1,4 @@
-package com.littleapp.videoplayer.Activity
+package com.littleapp.videoplayer.activity
 
 import android.content.Context
 import android.os.Bundle
@@ -6,9 +6,9 @@ import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.littleapp.videoplayer.Unit.THEME
-import com.littleapp.videoplayer.Adapter.VideoFolderAdapter
-import com.littleapp.videoplayer.Model.VideoFiles
+import com.littleapp.videoplayer.utils.THEME
+import com.littleapp.videoplayer.adapter.VideoFolderAdapter
+import com.littleapp.videoplayer.model.VideoFiles
 import com.littleapp.videoplayer.databinding.ActivityVideoFolderBinding
 
 class VideoFolderActivity : AppCompatActivity() {

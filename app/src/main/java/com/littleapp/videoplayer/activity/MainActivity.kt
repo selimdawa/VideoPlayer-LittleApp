@@ -1,4 +1,4 @@
-package com.littleapp.videoplayer.Activity
+package com.littleapp.videoplayer.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -12,11 +12,11 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.littleapp.videoplayer.Fragment.FilesFragment
-import com.littleapp.videoplayer.Fragment.FolderFragment
+import com.littleapp.videoplayer.fragment.FilesFragment
+import com.littleapp.videoplayer.fragment.FolderFragment
 import com.littleapp.videoplayer.R
-import com.littleapp.videoplayer.Unit.THEME
-import com.littleapp.videoplayer.Model.VideoFiles
+import com.littleapp.videoplayer.utils.THEME
+import com.littleapp.videoplayer.model.VideoFiles
 import com.littleapp.videoplayer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

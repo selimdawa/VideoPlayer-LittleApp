@@ -1,14 +1,15 @@
-package com.littleapp.videoplayer.Adapter
+package com.littleapp.videoplayer.adapter
 
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.decode.VideoFrameDecoder
 import coil.load
-import com.littleapp.videoplayer.Unit.CLASS
-import com.littleapp.videoplayer.Unit.VOID
-import com.littleapp.videoplayer.Model.VideoFiles
+import com.littleapp.videoplayer.utils.CLASS
+import com.littleapp.videoplayer.utils.VOID
+import com.littleapp.videoplayer.model.VideoFiles
 import com.littleapp.videoplayer.databinding.ItemVideoBinding
 import java.io.File
 
@@ -33,7 +34,11 @@ class VideoAdapter(
             name.text = currentItem.title
 
             currentItem.path?.let { path ->
-                image.load(File(path))
+                image.load(File(path)) {
+                    decoderFactory { result, options, _ ->
+                        VideoFrameDecoder(result.source, options)
+                    }
+                }
             }
 
             currentItem.duration?.toLongOrNull()?.let { durationLong ->
