@@ -5,7 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import com.littleapp.videoplayer.Unit.CLASS
 import com.littleapp.videoplayer.Unit.VOID
 import com.littleapp.videoplayer.Model.VideoFiles
@@ -33,9 +33,7 @@ class VideoAdapter(
             name.text = currentItem.title
 
             currentItem.path?.let { path ->
-                Glide.with(context)
-                    .load(File(path))
-                    .into(image)
+                image.load(File(path))
             }
 
             currentItem.duration?.toLongOrNull()?.let { durationLong ->

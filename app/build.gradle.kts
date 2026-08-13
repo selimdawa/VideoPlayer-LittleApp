@@ -48,7 +48,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
     //Image
-    implementation(libs.glide)                             //Glide Image
+    implementation(libs.coil)                             //Coil Image
     //Other's
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
