@@ -4,9 +4,7 @@ plugins {
 
 android {
     namespace = "com.littleapp.videoplayer"
-    compileSdk {
-       version = release(37)
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.littleapp.videoplayer"
