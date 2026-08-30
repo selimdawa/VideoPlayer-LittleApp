@@ -38,15 +38,20 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.preference.ktx)           //Shared Preference
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     //Layout
     implementation(libs.material)
+    implementation(libs.androidx.swiperefreshlayout)
     //Image
     implementation(libs.coil)                              //Coil Image
     implementation(libs.coilVideo)                         //Coil Video
+    //Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     //Other's
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)

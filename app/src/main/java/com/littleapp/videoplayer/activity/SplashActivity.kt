@@ -8,10 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.littleapp.videoplayer.utils.CLASS
-import com.littleapp.videoplayer.utils.THEME
-import com.littleapp.videoplayer.utils.VOID
 import com.littleapp.videoplayer.databinding.ActivitySplashBinding
+import com.littleapp.videoplayer.utils.THEME
+import com.littleapp.videoplayer.utils.intent1
 
 class SplashActivity : AppCompatActivity() {
 
@@ -39,7 +38,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun launch() {
-        VOID.Intent1(context, CLASS.MAIN)
+        context.intent1(MainActivity::class.java)
         finish()
     }
 

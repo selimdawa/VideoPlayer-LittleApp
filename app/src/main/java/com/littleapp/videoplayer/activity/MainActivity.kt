@@ -6,21 +6,21 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.littleapp.videoplayer.R
+import com.littleapp.videoplayer.databinding.ActivityMainBinding
 import com.littleapp.videoplayer.fragment.FilesFragment
 import com.littleapp.videoplayer.fragment.FolderFragment
-import com.littleapp.videoplayer.R
 import com.littleapp.videoplayer.utils.THEME
-import com.littleapp.videoplayer.model.VideoFiles
-import com.littleapp.videoplayer.databinding.ActivityMainBinding
+import com.littleapp.videoplayer.viewmodel.VideoViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,28 +28,36 @@ class MainActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private val context: Context = this@MainActivity
+    private val viewModel: VideoViewModel by viewModels()
 
     private val videoPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
-            videoFiles = getAllVideos(context)
+            Toast.makeText(context, R.string.permission_granted, Toast.LENGTH_SHORT).show()
+            viewModel.loadVideos()
             loadFolderFragment()
         } else {
-            Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.permission_denied, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        THEME.setThemeOfApp(context)
+        THEME.setThemeOfApp(this)
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            insets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, systemBars.bottom)
             insets
         }
 
@@ -59,16 +67,17 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.folders -> {
                     loadFolderFragment()
-                    item.isChecked = true
+                    true
                 }
+
                 R.id.files -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.constraint, FilesFragment())
-                        .commit()
-                    item.isChecked = true
+                        .replace(R.id.constraint, FilesFragment()).commit()
+                    true
                 }
+
+                else -> false
             }
-            false
         }
     }
 
@@ -80,75 +89,24 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE
         }
 
-        if (ContextCompat.checkSelfPermission(this, videoPermission) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this, videoPermission
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             videoPermissionLauncher.launch(videoPermission)
         } else {
-            videoFiles = getAllVideos(context)
+            viewModel.loadVideos()
             loadFolderFragment()
         }
     }
 
     private fun loadFolderFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.constraint, FolderFragment())
+        supportFragmentManager.beginTransaction().replace(R.id.constraint, FolderFragment())
             .commit()
-    }
-
-    private fun getAllVideos(context: Context): ArrayList<VideoFiles?> {
-        val tempVideoFiles = ArrayList<VideoFiles?>()
-        val uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(
-            MediaStore.Video.Media._ID,
-            MediaStore.Video.Media.DATA,
-            MediaStore.Video.Media.TITLE,
-            MediaStore.Video.Media.SIZE,
-            MediaStore.Video.Media.DATE_ADDED,
-            MediaStore.Video.Media.DURATION,
-            MediaStore.Video.Media.DISPLAY_NAME
-        )
-
-        context.contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
-            val idIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
-            val dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
-            val titleIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)
-            val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)
-            val dateAddedIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED)
-            val durationIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)
-            val displayNameIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
-
-            while (cursor.moveToNext()) {
-                val id = cursor.getString(idIndex)
-                val path = cursor.getString(dataIndex)
-                val title = cursor.getString(titleIndex)
-                val size = cursor.getString(sizeIndex)
-                val dateAdded = cursor.getString(dateAddedIndex)
-                val duration = cursor.getString(durationIndex)
-                val fileName = cursor.getString(displayNameIndex)
-
-                val videoFilesInstance = VideoFiles(id, path, title, fileName, size, dateAdded, duration)
-
-                val slashFirstIndex = path.lastIndexOf("/")
-                if (slashFirstIndex != -1) {
-                    val subString = path.substring(0, slashFirstIndex)
-                    folderList?.let { list ->
-                        if (!list.contains(subString)) {
-                            list.add(subString)
-                        }
-                    }
-                }
-                tempVideoFiles.add(videoFilesInstance)
-            }
-        }
-        return tempVideoFiles
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    companion object {
-        var videoFiles: ArrayList<VideoFiles?>? = ArrayList()
-        var folderList: ArrayList<String>? = ArrayList()
     }
 }

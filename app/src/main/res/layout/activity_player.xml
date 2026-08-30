@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
@@ -10,7 +11,8 @@
         android:id="@+id/expo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:resize_mode="fixed_width"
+        app:resize_mode="fit"
+        app:surface_type="texture_view"
         app:show_buffering="when_playing"
         app:show_fastforward_button="true"
         app:show_next_button="false"

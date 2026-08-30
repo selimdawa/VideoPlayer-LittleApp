@@ -4,11 +4,11 @@
     <item
         android:id="@+id/folders"
         android:icon="@drawable/ic_folder"
-        android:title="Folders"
+        android:title="@string/folders"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/files"
         android:icon="@drawable/ic_folder"
-        android:title="Files"
+        android:title="@string/files"
         app:showAsAction="ifRoom"/>
 </menu>

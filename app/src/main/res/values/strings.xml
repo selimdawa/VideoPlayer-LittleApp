@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">Video Player - Little App</string>
-
     //Theme
     <string name="basic_theme">Basic Theme</string>
     <string name="sec_theme">Sec Theme</string>
-
-
+    //Other's
+    <string name="permission_granted">Permission Granted</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="data_not_found">Data Not Found.</string>
+    <string name="folders">Folders</string>
+    <string name="files">Files</string>
 </resources>

@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.Window
-import androidx.activity.enableEdgeToEdge
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -12,15 +12,21 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
+import android.util.Log
+import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import com.littleapp.videoplayer.R
 import com.littleapp.videoplayer.adapter.VideoAdapter.Companion.videoFile
 import com.littleapp.videoplayer.adapter.VideoFolderAdapter.Companion.folderVideoFile
-import com.littleapp.videoplayer.utils.THEME
 import com.littleapp.videoplayer.model.VideoFiles
 import com.littleapp.videoplayer.databinding.ActivityPlayerBinding
+import com.littleapp.videoplayer.utils.THEME
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -32,26 +38,58 @@ class PlayerActivity : AppCompatActivity() {
     private var position = -1
     private var myFiles: ArrayList<VideoFiles?>? = ArrayList()
 
+    private val playerListener = object : Player.Listener {
+        @OptIn(UnstableApi::class)
+        override fun onPlayerError(error: PlaybackException) {
+            super.onPlayerError(error)
+            Log.e("PlayerActivity", "ExoPlayer Error: ${error.errorCodeName}", error)
+            Toast.makeText(context, "Playback Error: ${error.errorCodeName}\nCheck Logcat for details.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        THEME.setThemeOfApp(context)
-        enableEdgeToEdge()
+        THEME.setThemeOfApp(this)
+        setFullScreen()
         super.onCreate(savedInstanceState)
         _binding = ActivityPlayerBinding.inflate(layoutInflater)
-        setFullScreen()
         setContentView(binding.root)
 
         position = intent.getIntExtra("position", -1)
         val sender = intent.getStringExtra("sender")
 
         myFiles = if (sender == "FolderIsSending") folderVideoFile else videoFile
+
+        if (myFiles.isNullOrEmpty() || position == -1) {
+            Toast.makeText(context, R.string.data_not_found, Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
     }
 
     @OptIn(UnstableApi::class)
     private fun initializePlayer() {
-        val path = myFiles?.getOrNull(position)?.path ?: return
-        val uri = path.toUri()
+        val video = myFiles?.getOrNull(position) ?: return
+        val uri = (video.uriString ?: video.path)?.toUri() ?: return
 
-        exoPlayer = ExoPlayer.Builder(context).build().apply {
+        val mediaCodecSelector = MediaCodecSelector { mimeType, requiresSecureDecoder, requiresTunnelingDecoder ->
+            val decoders = MediaCodecSelector.DEFAULT.getDecoderInfos(
+                mimeType, requiresSecureDecoder, requiresTunnelingDecoder
+            )
+            if (Build.PRODUCT.contains("sdk_gphone") || Build.MODEL.contains("Emulator")) {
+                // On emulator, prefer Google's software decoders (c2.android.*) over goldfish/hardware ones
+                decoders.sortedBy { it.name.startsWith("c2.android") }.reversed()
+            } else {
+                decoders
+            }
+        }
+
+        val renderersFactory = DefaultRenderersFactory(context)
+            .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
+            .setMediaCodecSelector(mediaCodecSelector)
+            .setEnableDecoderFallback(true)
+
+        exoPlayer = ExoPlayer.Builder(context, renderersFactory).build().apply {
+            addListener(playerListener)
             val dataSourceFactory = DefaultDataSource.Factory(context)
             val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(MediaItem.fromUri(uri))
@@ -85,30 +123,23 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (Build.VERSION.SDK_INT > 23) {
-            initializePlayer()
-        }
+        initializePlayer()
     }
 
     override fun onResume() {
         super.onResume()
-        if (Build.VERSION.SDK_INT <= 23 || exoPlayer == null) {
+        if (exoPlayer == null) {
             initializePlayer()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (Build.VERSION.SDK_INT <= 23) {
-            releasePlayer()
-        }
     }
 
     override fun onStop() {
         super.onStop()
-        if (Build.VERSION.SDK_INT > 23) {
-            releasePlayer()
-        }
+        releasePlayer()
     }
 
     override fun onDestroy() {
