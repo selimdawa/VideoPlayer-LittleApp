@@ -10,7 +10,7 @@
 ## Images
 One | Two | Three 
 --- | --- | --- | 
-![](https://blogger.googleusercontent.com/img/a/AVvXsEiq-jMwYQYdxfeW3Er8qzNeICMpDQj2e8C113hv_BVjmxTRjLaUgNI9cpyR2bINKldyeAPKrEts9Hp90M1rugEe1a-zIny3lGWrZutFQzk1kmEWEb6CA7V09DvMj38Kgrjbh2lCJf8Pn_4jOr_wWlvZ7kogCDa2h0d9g2w_Hbog2xNrOA_MWPqax0UXJA) | ![](https://blogger.googleusercontent.com/img/a/AVvXsEjVBflVleIX7PObzMgZxnGQk0BI0Yo0QS3-szUuhNJPnvGu9kM9RHtmQQhzjpyF4IfINYFMgpLmN1Ur2MsQ5vh6f6_2tnd2BTD37nVFi1i4Qk_FTilsJQYvDAHl6QcUEo7rNS0kzNJ3kYthaWuvduiWacVMFDmNKbentvRxzeCDeFY5ZBPb0dlWRwphpg) | ![](https://blogger.googleusercontent.com/img/a/AVvXsEgEjTfIjgaNBTeNokpvvWfgIaSqlQId-Tsd2kgxEXSPtW7XHCfxI84_0TwkcNwyg2FvGz1xZqtjnOFUYnp-3svN68LoH537702fn-l0Ugi7yRf9QMc3vCeWUJQgmIio11xPhQca19EwqeZZY-Fv2MeAtal_xxPPml75yEMa2e3ifdNKKRjZYOSF-37QpQ) | 
+![](https://raw.githubusercontent.com/selimdawa/SimpleMultiAppsKotlin/main/UI/34.jpg) | ![](https://raw.githubusercontent.com/selimdawa/SimpleMultiAppsKotlin/main/UI/35.jpg) | ![](https://raw.githubusercontent.com/selimdawa/SimpleMultiAppsKotlin/main/UI/36.jpg) | 
 
 - [Simple Multi Apps - Kotlin](https://github.com/selimdawa/SimpleMultiAppsKotlin/)
 
@@ -19,4 +19,3 @@ One | Two | Three
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
