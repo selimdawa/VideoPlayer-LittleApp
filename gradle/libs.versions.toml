@@ -10,7 +10,7 @@ activityKtx = "1.13.0"
 fragment = "1.9.1"
 media3Exoplayer = "1.11.1"
 preferenceKtx = "1.2.1"
-coil = "2.7.0"
+coil = "3.6.3"
 lifecycle = "2.11.0"
 swiperefreshlayout = "1.2.0"
 
